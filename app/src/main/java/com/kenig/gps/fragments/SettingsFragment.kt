@@ -6,7 +6,6 @@ import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import com.kenig.gps.R
-import com.kenig.gps.utils.showToast
 
 
 //3
