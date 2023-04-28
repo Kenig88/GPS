@@ -46,10 +46,8 @@ fun AppCompatActivity.myLog(s: String){
     Log.d("MyLog", s)
 }
 
-fun Fragment.checkPermission(p: String): Boolean {
-    return when (PackageManager.PERMISSION_GRANTED) {
-        ContextCompat.checkSelfPermission(activity as AppCompatActivity, p) -> true
-        else -> false
-    }
+fun Fragment.isPermissionGranted(permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(
+        activity as AppCompatActivity, permission) == PackageManager.PERMISSION_GRANTED
 }
 
