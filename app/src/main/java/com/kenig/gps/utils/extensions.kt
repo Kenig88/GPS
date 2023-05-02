@@ -1,7 +1,6 @@
 package com.kenig.gps.utils
 
 import android.content.pm.PackageManager
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -30,20 +29,8 @@ fun Fragment.openFragment(f: Fragment){
         .commit()
 }
 
-fun AppCompatActivity.showToast(s: String){
-    Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
-}
-
 fun Fragment.showToast(s: String){
     Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
-}
-
-fun Fragment.myLog(s: String){
-    Log.d("MyLog", s)
-}
-
-fun AppCompatActivity.myLog(s: String){
-    Log.d("MyLog", s)
 }
 
 fun Fragment.isPermissionGranted(permission: String): Boolean {

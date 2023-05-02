@@ -1,12 +1,15 @@
 package com.kenig.gps.fragments
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +18,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kenig.gps.R
 import com.kenig.gps.databinding.FragmentMainBinding
+import com.kenig.gps.location.LocationModel
 import com.kenig.gps.location.LocationService
 import com.kenig.gps.utils.DialogManager
+import com.kenig.gps.utils.TimeUtils
 import com.kenig.gps.utils.isPermissionGranted
 import com.kenig.gps.utils.showToast
 import org.osmdroid.config.Configuration
 import org.osmdroid.library.BuildConfig
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import java.util.*
 
 
 class MainFragment : Fragment() {
     private var isServiceRunning = false //8.5.1
+    private var timer: Timer? = null //9.1
+    private var startTime = 0L //9.2
+    private val timeData = MutableLiveData<String>() //9.3
     private lateinit var permissionLauncher: ActivityResultLauncher<String> //5
     private lateinit var binding: FragmentMainBinding
 
@@ -46,12 +57,37 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         registerPermissions() //5.1.1
         setOnClicks() //8.4.1
-        checkServiceType() //8.6.1
+        checkServiceState() //8.6.1
+        updateTime() //9.3.2
+        registerLocReceiver() //13.4.1
     }
 
     private fun setOnClicks() = with(binding){ //8.4
         val listener = onClicks() //8.3.1
         fStartStop.setOnClickListener(listener)
+    }
+
+    private fun updateTime(){ //9.3.1
+        timeData.observe(viewLifecycleOwner){
+            binding.tvTime.text = it
+        }
+    }
+
+    private fun startTimer(){ //9.1.1
+        timer?.cancel()
+        timer = Timer()
+        startTime = LocationService.startTime //9.5.1
+        timer?.schedule(object : TimerTask(){
+            override fun run() {
+                activity?.runOnUiThread{
+                    timeData.value = getCurrentTime() //9.4.1
+                }
+            }
+        }, 1000, 1000)
+    }
+
+    private fun getCurrentTime(): String{ //9.4
+        return "Time: ${TimeUtils.getTime(System.currentTimeMillis() - startTime)}"
     }
 
     private fun onClicks(): View.OnClickListener{ //8.3
@@ -68,14 +104,16 @@ class MainFragment : Fragment() {
         } else {
             activity?.stopService(Intent(activity, LocationService::class.java))
             binding.fStartStop.setImageResource(R.drawable.ic_start)
+            timer?.cancel() //9.1.2
         }
         isServiceRunning = !isServiceRunning
     }
 
-    private fun checkServiceType(){//8.6
+    private fun checkServiceState(){//8.6
         isServiceRunning = LocationService.isRunning
         if(isServiceRunning){
             binding.fStartStop.setImageResource(R.drawable.ic_stop)
+            startTimer()
         }
     }
 
@@ -86,6 +124,8 @@ class MainFragment : Fragment() {
             activity?.startService(Intent(activity, LocationService::class.java))
         }
         binding.fStartStop.setImageResource(R.drawable.ic_stop)
+        LocationService.startTime = System.currentTimeMillis() //9.5.2
+        startTimer() //9.4.2
     }
 
     override fun onResume() {
@@ -101,7 +141,7 @@ class MainFragment : Fragment() {
     }
 
     private fun initOsm() = with(binding){ //4.1 (не забыть добавить разрешения в Manifest)
-        mapView.controller.setZoom(13.0)
+        mapView.controller.setZoom(17.0)
         val mLocProvider = GpsMyLocationProvider(activity)
         val mLocOverlay = MyLocationNewOverlay(mLocProvider, mapView)
         mLocOverlay.enableMyLocation()
@@ -168,6 +208,20 @@ class MainFragment : Fragment() {
         } else {
             showToast("GPS включено")
         }
+    }
+
+    private val receiver = object : BroadcastReceiver(){ //13.3(получает BroadcastIntent(locModel) с LocationService)
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if(intent?.action == LocationService.LOC_MODEL_INTENT){
+                val locModel = intent.getSerializableExtra(LocationService.LOC_MODEL_INTENT) as LocationModel
+                Log.d("MyLog", "MainFragment Distance: ${locModel.distance}")
+            }
+        }
+    }
+
+    private fun registerLocReceiver(){ //13.4
+        val locFilter = IntentFilter(LocationService.LOC_MODEL_INTENT)
+        LocalBroadcastManager.getInstance(activity as AppCompatActivity).registerReceiver(receiver, locFilter)
     }
 
     companion object {

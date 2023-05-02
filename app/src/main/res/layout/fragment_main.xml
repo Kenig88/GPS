@@ -28,11 +28,11 @@
         android:src="@drawable/ic_start"
         app:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton" />
+        app:layout_constraintTop_toBottomOf="@+id/fMyLoc" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fMyLoc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -59,7 +59,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvAverageVel"
+        android:id="@+id/tvSpeedVel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -67,14 +67,14 @@
         android:background="#99FFFFFF"
         android:paddingStart="3dp"
         android:paddingEnd="3dp"
-        android:text="Average velocity: 3.5km/h"
+        android:text="Average speed: 3.5km/h"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTime" />
 
     <TextView
-        android:id="@+id/tvVelocity"
+        android:id="@+id/tvSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -82,11 +82,11 @@
         android:background="#99FFFFFF"
         android:paddingStart="3dp"
         android:paddingEnd="3dp"
-        android:text="Velocity: 3km/h"
+        android:text="Speed: 3km/h"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAverageVel" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSpeedVel" />
 
     <TextView
         android:id="@+id/tvDistance"
@@ -101,7 +101,7 @@
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvVelocity" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
