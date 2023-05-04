@@ -13,4 +13,13 @@
     <string name="yes_dialog">Yes</string>
     <string name="no_dialog">No</string>
     <string name="no_toast">Turn on geolocation!</string>
+    <string name="distance">Distance:</string>
+    <string name="speed">Speed:</string>
+    <string name="average_speed">Average speed:</string>
+    <string name="title_save_dialog">Save this track?</string>
+    <string name="time_save_dialog">Time: </string>
+    <string name="speed_save_dialog">Speed: </string>
+    <string name="distance_save_dialog">Distance: </string>
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
 </resources>
