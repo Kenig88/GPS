@@ -87,8 +87,8 @@ class LocationService : Service() {
 
     private fun initLocation(){ //10.1
         locRequest = LocationRequest.create() //10.5
-        locRequest.interval = 3000 //(интервал обновления местоположения пользователя в миллисекундах)
-        locRequest.fastestInterval = 3000
+        locRequest.interval = 1 //(интервал обновления местоположения пользователя в миллисекундах)
+        locRequest.fastestInterval = 1
         locRequest.priority = PRIORITY_HIGH_ACCURACY //(высокая точность местоположения)
         locProvider = LocationServices.getFusedLocationProviderClient(baseContext) //(инициализировал класс Fused, который даёт возможность получатьсведения о местоположении (просто доступ))
     }

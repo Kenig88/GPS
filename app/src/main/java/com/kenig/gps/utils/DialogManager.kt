@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.widget.Toast
 import com.kenig.gps.R
+import com.kenig.gps.database.TrackItem
 import com.kenig.gps.databinding.SaveDialogBinding
 
 
@@ -27,16 +28,16 @@ object DialogManager { //7
         dialog.show() //(нужно обязательно дописать чтобы Dialog запустился)
     }
 
-    interface Listener { //7.1(слушатель на позитивную кнопку)
-        fun onClick()
-    }
-
-    fun showSaveDialog(context: Context, listener: Listener){ //17
+    fun showSaveDialog(context: Context, item: TrackItem?, listener: Listener){ //17
         val builder = AlertDialog.Builder(context)
         val binding = SaveDialogBinding.inflate(LayoutInflater.from(context), null, false)
         builder.setView(binding.root)
         val dialog = builder.create()
         binding.apply{
+            tvTime.text = item?.time //18.1.1
+            tvSpeed.text = item?.av_speed //18.1.2
+            tvDistance.text = item?.distance // 18.1.3
+
             bSave.setOnClickListener{
                 listener.onClick()
                 dialog.dismiss()
@@ -45,7 +46,11 @@ object DialogManager { //7
                 dialog.dismiss()
             }
         }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) //(это чтобы уюрать белое поле самого Диалога)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) //(это чтобы убрать белое поле самого Диалога)
         dialog.show()
+    }
+
+    interface Listener { //7.1(слушатель на позитивную кнопку)
+        fun onClick()
     }
 }

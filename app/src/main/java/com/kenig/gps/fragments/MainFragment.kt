@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kenig.gps.MainViewModel
 import com.kenig.gps.R
+import com.kenig.gps.database.TrackItem
 import com.kenig.gps.databinding.FragmentMainBinding
 import com.kenig.gps.location.LocationModel
 import com.kenig.gps.location.LocationService
@@ -39,6 +41,7 @@ import java.util.*
 
 
 class MainFragment : Fragment() {
+    private var locationModel: LocationModel? = null //19.1
     private var pl: Polyline? = null //16
     private var firstStart = true //16.7
     private var isServiceRunning = false //8.5.1
@@ -83,10 +86,11 @@ class MainFragment : Fragment() {
         model.locationUpdates.observe(viewLifecycleOwner){
             val distance = "${resources.getString(R.string.distance)} ${String.format("%.1f", it.distance)} m"
             val speed = "${resources.getString(R.string.speed)} ${String.format("%.1f", 3.6f * it.speed)} km/h"
-            val averageSpeed = "${resources.getString(R.string.average_speed)} ${getAverageSpeed(it.distance)}" //15.1
+            val averageSpeed = "${resources.getString(R.string.average_speed)} ${getAverageSpeed(it.distance)} km/h" //15.1
             tvDistance.text = distance
             tvSpeed.text = speed
             tvAverageSpeed.text = averageSpeed //15.2
+            locationModel = it //19.2
             updatePolyline(it.geoPointsList) //16.6.1
         }
     }
@@ -101,7 +105,7 @@ class MainFragment : Fragment() {
                     model.timeData.value = getCurrentTime() //9.4.1
                 }
             }
-        }, 1000, 1000)
+        }, 1, 1)
     }
 
     private fun getAverageSpeed(distance: Float): String{ //15
@@ -120,6 +124,15 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun geoPointsToString(list: List<GeoPoint>): String{ //19
+        val sb = StringBuilder()
+        list.forEach{
+            sb.append("${it.latitude}, ${it.longitude}/")
+        }
+        Log.d("MyLog", "Points: $sb")
+        return sb.toString()
+    }
+
     private fun startStopService(){ //8.5
         if(!isServiceRunning){ //(false)
             startLocService() //8.2.1
@@ -127,13 +140,26 @@ class MainFragment : Fragment() {
             activity?.stopService(Intent(activity, LocationService::class.java))
             binding.fStartStop.setImageResource(R.drawable.ic_start)
             timer?.cancel() //9.1.2
-            DialogManager.showSaveDialog(requireContext(), object : DialogManager.Listener{ //17.1
+            DialogManager.showSaveDialog(requireContext(),
+                getTrackItem(), //19.3.1
+                object : DialogManager.Listener{ //17.1
                 override fun onClick() {
                     showToast("Track saved!")
                 }
             })
         }
         isServiceRunning = !isServiceRunning
+    }
+
+    private fun getTrackItem(): TrackItem{ //19.3
+        return TrackItem(
+                null,
+                getCurrentTime(),
+                TimeUtils.getDate(),
+                "${resources.getString(R.string.average_speed)} ${getAverageSpeed(locationModel!!.distance)} km/h",
+                "${resources.getString(R.string.distance)} ${String.format("%.1f", locationModel!!.distance)} m",
+                geoPointsToString(locationModel!!.geoPointsList)
+            )
     }
 
     private fun checkServiceState(){//8.6
