@@ -8,7 +8,7 @@ import java.io.Serializable
 
 //18
 
-@Entity(tableName = "track_item")
+@Entity(tableName = "track")
 data class TrackItem(
 
     @PrimaryKey(autoGenerate = true)

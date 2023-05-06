@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.kenig.gps.MainApp
 import com.kenig.gps.MainViewModel
 import com.kenig.gps.R
 import com.kenig.gps.database.TrackItem
@@ -49,7 +50,10 @@ class MainFragment : Fragment() {
     private var startTime = 0L //9.2
     private lateinit var permissionLauncher: ActivityResultLauncher<String> //5
     private lateinit var binding: FragmentMainBinding
-    private val model: MainViewModel by activityViewModels() //14.1
+    private val model: MainViewModel by activityViewModels{ //14.1
+        MainViewModel.ViewModelFactory((requireContext().applicationContext as MainApp).database)
+    }
+
 
 
     override fun onCreateView(
@@ -68,7 +72,10 @@ class MainFragment : Fragment() {
         checkServiceState() //8.6.1
         updateTime() //9.3.2
         registerLocReceiver() //13.4.1
-        locationUpdates() //14.3
+        locationUpdates() //14.3\
+        model.tracks.observe(viewLifecycleOwner){ //19.4
+            Log.d("MyLog", "List size: ${it.size}")
+        }
     }
 
     private fun setOnClicks() = with(binding){ //8.4
@@ -140,11 +147,13 @@ class MainFragment : Fragment() {
             activity?.stopService(Intent(activity, LocationService::class.java))
             binding.fStartStop.setImageResource(R.drawable.ic_start)
             timer?.cancel() //9.1.2
+            val track = getTrackItem() //19.5
             DialogManager.showSaveDialog(requireContext(),
-                getTrackItem(), //19.3.1
+                track, //19.5.1
                 object : DialogManager.Listener{ //17.1
                 override fun onClick() {
                     showToast("Track saved!")
+                    model.insertTrack(track)
                 }
             })
         }
