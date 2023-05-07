@@ -95,7 +95,7 @@ class MainFragment : Fragment() {
             val speed = "${resources.getString(R.string.speed)} ${String.format("%.1f", 3.6f * it.speed)} km/h"
             val averageSpeed = "${resources.getString(R.string.average_speed)} ${getAverageSpeed(it.distance)} km/h" //15.1
             tvDistance.text = distance
-            tvSpeed.text = speed
+            tvAvSpeed.text = speed
             tvAverageSpeed.text = averageSpeed //15.2
             locationModel = it //19.2
             updatePolyline(it.geoPointsList) //16.6.1
@@ -165,7 +165,7 @@ class MainFragment : Fragment() {
                 null,
                 getCurrentTime(),
                 TimeUtils.getDate(),
-                "${resources.getString(R.string.average_speed)} ${getAverageSpeed(locationModel!!.distance)} km/h",
+                "${resources.getString(R.string.avg_speed)} ${getAverageSpeed(locationModel!!.distance)} km/h",
                 "${resources.getString(R.string.distance)} ${String.format("%.1f", locationModel!!.distance)} m",
                 geoPointsToString(locationModel!!.geoPointsList)
             )

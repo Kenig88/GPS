@@ -38,12 +38,12 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
         <TextView
-            android:id="@+id/tvSpeed"
+            android:id="@+id/tvAvSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/amiko_semibold"
-            android:text="@string/speed_save_dialog"
+            android:text="@string/avg_speed"
             android:textColor="@color/blue"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +63,7 @@
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
+            app:layout_constraintTop_toBottomOf="@+id/tvAvSpeed" />
 
         <LinearLayout
             android:id="@+id/linearLayout"

@@ -35,7 +35,7 @@ object DialogManager { //7
         val dialog = builder.create()
         binding.apply{
             tvTime.text = item?.time //18.1.1
-            tvSpeed.text = item?.av_speed //18.1.2
+            tvAvSpeed.text = item?.av_speed //18.1.2
             tvDistance.text = item?.distance // 18.1.3
 
             bSave.setOnClickListener{

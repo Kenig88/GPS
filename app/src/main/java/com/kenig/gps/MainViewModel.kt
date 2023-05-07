@@ -20,6 +20,10 @@ class MainViewModel(db: MainDb) : ViewModel() {
         dao.insertTrack(trackItem)
     }
 
+    fun deleteTrack(trackItem: TrackItem) = viewModelScope.launch{ //20.11 (код для удаления сохранённых трэков)
+        dao.deleteTrack(trackItem)
+    }
+
     class ViewModelFactory(private val db: MainDb) :
         ViewModelProvider.Factory { //19.3 (этот класс будет создавать класс MainViewModel (тот что выше) и отсюда я смогу создать базу данных)
         override fun <T : ViewModel> create(modelClass: Class<T>): T { //(пока можно не понимать зачем это, просто ViewModelFactort Создаёт класс MainViewModel и через его конструктор я смогу передать Dao)

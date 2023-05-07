@@ -4,9 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="5dp"
-    android:layout_marginTop="2.5dp"
+    android:layout_marginTop="5dp"
     android:layout_marginEnd="5dp"
-    android:layout_marginBottom="2.5dp"
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
-            android:fontFamily="@font/anton"
+            android:fontFamily="@font/amiko_semibold"
             android:text="06.05.2023 15:58"
             android:textColor="#673AB7"
             android:textSize="12sp"
@@ -30,12 +29,11 @@
             android:id="@+id/tvDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/anton"
             android:text="6.5 km"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvDate" />
 
@@ -49,12 +47,12 @@
             app:srcCompat="@drawable/ic_speed" />
 
         <TextView
-            android:id="@+id/tvSpeed"
+            android:id="@+id/tvAvSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/amiko_semibold"
-            android:text="Average speed: 2.5km/h"
+            android:text="Speed: 2.5km/h"
             android:textColor="#03A9F4"
             app:layout_constraintBottom_toBottomOf="@+id/imSpeed"
             app:layout_constraintStart_toEndOf="@+id/imSpeed"
@@ -90,7 +88,6 @@
             android:background="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tvDistance"
-            app:layout_constraintStart_toStartOf="@+id/tvDistance"
             app:layout_constraintTop_toBottomOf="@+id/tvDistance"
             app:srcCompat="@drawable/ic_delete" />
     </androidx.constraintlayout.widget.ConstraintLayout>
