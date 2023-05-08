@@ -21,8 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.kenig.gps.MainApp
-import com.kenig.gps.MainViewModel
+import androidx.preference.PreferenceManager
+import com.kenig.gps.utils.MainApp
+import com.kenig.gps.utils.MainViewModel
 import com.kenig.gps.R
 import com.kenig.gps.database.TrackItem
 import com.kenig.gps.databinding.FragmentMainBinding
@@ -204,7 +205,9 @@ class MainFragment : Fragment() {
 
     private fun initOsm() = with(binding){ //4.1 (не забыть добавить разрешения в Manifest)
         pl = Polyline() //16.1
-        pl?.outlinePaint?.color = Color.BLUE //16.2
+        pl?.outlinePaint?.color = Color.parseColor(
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getString("color_key", "#14AD00"))
         mapView.controller.setZoom(18.0)
         val mLocProvider = GpsMyLocationProvider(activity)
         val mLocOverlay = MyLocationNewOverlay(mLocProvider, mapView)

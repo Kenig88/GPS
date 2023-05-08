@@ -19,6 +19,7 @@ class TrackAdapter(private val listener: Listener) : ListAdapter<TrackItem, Trac
         private var trackTemp: TrackItem? = null //20.8 (временная переменная)
         init { //20.1
             binding.ibDelete.setOnClickListener(this)
+            binding.item.setOnClickListener(this) //21.3
         }
 
         fun bind(track: TrackItem) = with(binding) {
@@ -29,8 +30,13 @@ class TrackAdapter(private val listener: Listener) : ListAdapter<TrackItem, Trac
             tvTime.text = track.time
         }
 
-        override fun onClick(p0: View?) { //20.2
-            trackTemp?.let { listener.onClick(it) } //20.8.1
+        override fun onClick(view: View) { //20.2
+            val type = when(view.id){ //21.4
+                R.id.ibDelete -> ClickType.DELETE
+                R.id.item -> ClickType.OPEN
+                else -> ClickType.OPEN
+            }
+            trackTemp?.let { listener.onClick(it, type) }
         }
     }
 
@@ -52,6 +58,11 @@ class TrackAdapter(private val listener: Listener) : ListAdapter<TrackItem, Trac
     }
 
     interface Listener{ //20.3
-        fun onClick(track: TrackItem)
+        fun onClick(track: TrackItem, type: ClickType)//21.1
+    }
+
+    enum class ClickType{ //21
+        DELETE,
+        OPEN
     }
 }

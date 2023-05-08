@@ -1,7 +1,8 @@
-package com.kenig.gps
+package com.kenig.gps.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.kenig.gps.R
 import com.kenig.gps.databinding.ActivityMainBinding
 import com.kenig.gps.fragments.MainFragment
 import com.kenig.gps.fragments.SettingsFragment

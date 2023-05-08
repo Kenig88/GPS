@@ -29,7 +29,7 @@ private lateinit var colorPref: Preference
     }
 
     private fun onChangeListener(): OnPreferenceChangeListener{
-        return Preference.OnPreferenceChangeListener{
+        return OnPreferenceChangeListener{
             pref, value ->
                 when(pref.key){
                     "update_time_key" -> onTimeChange(value.toString())
@@ -55,7 +55,7 @@ private lateinit var colorPref: Preference
         val pos = valueArray.indexOf(pref?.getString("update_time_key", "3000"))
         timePref.title = "$title: ${nameArray[pos]}"
 
-        val trackColor = pref?.getString("color_key", "#1EFF00")
+        val trackColor = pref?.getString("color_key", "#14AD00")
         colorPref.icon?.setTint(Color.parseColor(trackColor))
     }
 }

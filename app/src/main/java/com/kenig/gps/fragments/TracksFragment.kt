@@ -1,18 +1,18 @@
 package com.kenig.gps.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kenig.gps.MainApp
-import com.kenig.gps.MainViewModel
+import com.kenig.gps.utils.MainApp
+import com.kenig.gps.utils.MainViewModel
 import com.kenig.gps.database.TrackAdapter
 import com.kenig.gps.database.TrackItem
 import com.kenig.gps.databinding.FragmentTracksBinding
+import com.kenig.gps.utils.openFragment
 
 
 class TracksFragment : Fragment(), TrackAdapter.Listener { //20.4 (Listener)
@@ -49,12 +49,18 @@ class TracksFragment : Fragment(), TrackAdapter.Listener { //20.4 (Listener)
         }
     }
 
+    override fun onClick(track: TrackItem, type: TrackAdapter.ClickType) { //20.5
+       when(type){
+           TrackAdapter.ClickType.DELETE -> model.deleteTrack(track) //20.12
+           TrackAdapter.ClickType.OPEN -> {
+               model.currentTrack.value = track //21.3
+               openFragment(ViewTrackFragment.newInstance())
+           }
+       }
+    }
+
     companion object {
         @JvmStatic
         fun newInstance() = TracksFragment()
-    }
-
-    override fun onClick(track: TrackItem) { //20.5
-        model.deleteTrack(track) //20.12
     }
 }

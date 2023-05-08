@@ -1,4 +1,4 @@
-package com.kenig.gps
+package com.kenig.gps.utils
 
 import androidx.lifecycle.*
 import com.kenig.gps.database.MainDb
@@ -14,6 +14,7 @@ class MainViewModel(db: MainDb) : ViewModel() {
     val dao = db.getDao()
     val timeData = MutableLiveData<String>() //9.3
     val locationUpdates = MutableLiveData<LocationModel>()
+    val currentTrack = MutableLiveData<TrackItem>() //21.2
     val tracks = dao.getAllTracks().asLiveData()
 
     fun insertTrack(trackItem: TrackItem) = viewModelScope.launch { //19.4

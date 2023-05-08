@@ -12,14 +12,13 @@ import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-import com.kenig.gps.MainActivity
+import com.kenig.gps.activities.MainActivity
 import com.kenig.gps.R
 import org.osmdroid.util.GeoPoint
 

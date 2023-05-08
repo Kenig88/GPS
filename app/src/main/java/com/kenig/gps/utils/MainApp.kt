@@ -1,4 +1,4 @@
-package com.kenig.gps
+package com.kenig.gps.utils
 
 import android.app.Application
 import com.kenig.gps.database.MainDb
