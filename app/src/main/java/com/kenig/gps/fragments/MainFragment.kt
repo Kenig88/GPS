@@ -49,13 +49,12 @@ class MainFragment : Fragment() {
     private var isServiceRunning = false //8.5.1
     private var timer: Timer? = null //9.1
     private var startTime = 0L //9.2
+    private lateinit var mLocOverlay: MyLocationNewOverlay //23.1
     private lateinit var permissionLauncher: ActivityResultLauncher<String> //5
     private lateinit var binding: FragmentMainBinding
     private val model: MainViewModel by activityViewModels{ //14.1
         MainViewModel.ViewModelFactory((requireContext().applicationContext as MainApp).database)
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,9 +78,30 @@ class MainFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkLocPermission() //5.2.1
+        firstStart = true
+    }
+
     private fun setOnClicks() = with(binding){ //8.4
         val listener = onClicks() //8.3.1
         fStartStop.setOnClickListener(listener)
+        fMyLoc.setOnClickListener(listener) //23
+    }
+
+    private fun onClicks(): View.OnClickListener{ //8.3
+        return View.OnClickListener {
+            when(it.id){
+                R.id.fStartStop -> startStopService()
+                R.id.fMyLoc -> buttonMyLoc() //23.0.2
+            }
+        }
+    }
+
+    private fun buttonMyLoc() = with(binding){ //23.0.1
+        mapView.controller.animateTo(mLocOverlay.myLocation)
+        mLocOverlay.enableFollowLocation()
     }
 
     private fun updateTime(){ //9.3.1
@@ -122,14 +142,6 @@ class MainFragment : Fragment() {
 
     private fun getCurrentTime(): String{ //9.4
         return "Time: ${TimeUtils.getTime(System.currentTimeMillis() - startTime)}"
-    }
-
-    private fun onClicks(): View.OnClickListener{ //8.3
-        return View.OnClickListener {
-            when(it.id){
-                R.id.fStartStop -> startStopService()
-            }
-        }
     }
 
     private fun geoPointsToString(list: List<GeoPoint>): String{ //19
@@ -191,11 +203,6 @@ class MainFragment : Fragment() {
         startTimer() //9.4.2
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkLocPermission() //5.2.1
-    }
-
     private fun settingsOsm(){ //4 (инициализация OSM)
         Configuration.getInstance().load(activity as AppCompatActivity,
             activity?.getSharedPreferences("osm_pref.bg", Context.MODE_PRIVATE)
@@ -210,13 +217,13 @@ class MainFragment : Fragment() {
                 .getString("color_key", "#14AD00"))
         mapView.controller.setZoom(18.0)
         val mLocProvider = GpsMyLocationProvider(activity)
-        val mLocOverlay = MyLocationNewOverlay(mLocProvider, mapView)
+        mLocOverlay = MyLocationNewOverlay(mLocProvider, mapView)
         mLocOverlay.enableMyLocation()
         mLocOverlay.enableFollowLocation() //(карта автоматически переместится в то место где я нахожусь из за включенной геолокации в настройках)
         mLocOverlay.runOnFirstFix{
             mapView.overlays.clear()
-            mapView.overlays.add(mLocOverlay)
             mapView.overlays.add(pl) //16.5
+            mapView.overlays.add(mLocOverlay)
         }
     }
 
@@ -293,7 +300,7 @@ class MainFragment : Fragment() {
     }
 
     private fun addPoint(list: List<GeoPoint>){ //16.3
-        pl?.addPoint(list[list.size - 1])
+        if(list.isNotEmpty()) pl?.addPoint(list[list.size - 1])
     }
 
     private fun fillPolyline(list: List<GeoPoint>){ //16.4

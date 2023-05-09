@@ -23,6 +23,7 @@ import org.osmdroid.views.overlay.Polyline
 
 
 class ViewTrackFragment : Fragment() {
+    private var startPoint: GeoPoint? = null //23.1
     private lateinit var binding: FragmentViewTrackBinding
     private val model: MainViewModel by activityViewModels{ //21.4
         MainViewModel.ViewModelFactory((requireContext().applicationContext as MainApp).database)
@@ -40,6 +41,13 @@ class ViewTrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getTrack() //21.5.1
+        buttonMyLoc() //23.2.2
+    }
+
+    private fun buttonMyLoc() = with(binding){ //23.2
+        fMyLoc.setOnClickListener{
+            if(startPoint != null) mapView.controller.animateTo(startPoint)
+        }
     }
 
     private fun getTrack() = with(binding){ //21.5
@@ -53,6 +61,7 @@ class ViewTrackFragment : Fragment() {
             mapView.overlays.add(polyline) //22.2.1
             setMarkers(polyline.actualPoints) //22.3.1
             goToStartPosition(polyline.actualPoints[0]) //22.1.1
+            startPoint = polyline.actualPoints[0] //23.2.1
         }
     }
 
@@ -76,11 +85,11 @@ class ViewTrackFragment : Fragment() {
         binding.mapView.controller.animateTo(startPosition)
     }
 
-    private fun setMarkers(list: List<GeoPoint>) = with(binding){ //22.3
-       val startMarker = Marker(mapView)
-       val finishMarker = Marker(mapView)
-       startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-       finishMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+    private fun setMarkers(list: List<GeoPoint>) = with(binding) { //22.3
+        val startMarker = Marker(mapView)
+        val finishMarker = Marker(mapView)
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        finishMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         startMarker.icon = getDrawable(requireContext(), R.drawable.ic_start_marker)
         finishMarker.icon = getDrawable(requireContext(), R.drawable.ic_finish_marker)
         startMarker.position = list[0]

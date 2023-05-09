@@ -12,10 +12,12 @@ import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.kenig.gps.activities.MainActivity
@@ -25,12 +27,22 @@ import org.osmdroid.util.GeoPoint
 
 //8.1
 
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+//(private var isDebug = true (!!если на реальном устройстве, то false, если на эмуляторе, то true!!)
+
 class LocationService : Service() {
     private var distance = 0.0f //11.2
     private var lastLocation: Location? = null //11
     private lateinit var locProvider: FusedLocationProviderClient //10 (с помощью него сохраняются координаты для проложения маршрута за пользователем)
     private lateinit var locRequest: LocationRequest //10.4
     private lateinit var geoPointsList: ArrayList<GeoPoint>//12.1
+    private var isDebug = true //(!!если на реальном устройстве, то false, если на эмуляторе, то true)
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -85,11 +97,14 @@ class LocationService : Service() {
     }
 
     private fun initLocation(){ //10.1
+        var updateInterval = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString("update_time_key", "1")?.toLong() ?: 1
         locRequest = LocationRequest.create() //10.5
-        locRequest.interval = 1 //(интервал обновления местоположения пользователя в миллисекундах)
-        locRequest.fastestInterval = 1
+        locRequest.interval = updateInterval //(интервал обновления местоположения пользователя в миллисекундах)
+        locRequest.fastestInterval = updateInterval
         locRequest.priority = PRIORITY_HIGH_ACCURACY //(высокая точность местоположения)
         locProvider = LocationServices.getFusedLocationProviderClient(baseContext) //(инициализировал класс Fused, который даёт возможность получатьсведения о местоположении (просто доступ))
+        Log.d("MyLog", "Interval: $updateInterval")
     }
 
     private val locCallback = object : LocationCallback(){ //10.6 в этот коллбэк locProvider будет передавать данные о местоположении)
@@ -97,8 +112,10 @@ class LocationService : Service() {
             super.onLocationResult(locResult)
             val currentLocation = locResult.lastLocation
             if(lastLocation != null && currentLocation != null){ //11.1
+                if(currentLocation.speed > 0.4 || isDebug){
                 distance += lastLocation?.distanceTo(currentLocation)!! //11.2.1 (таким образом накапливается дистанция + если погрешность спутника 0.2мс то дистанция не увеличивается)
                 geoPointsList.add(GeoPoint(currentLocation.latitude, currentLocation.longitude)) //12.3
+                }
                 val locModel = LocationModel( //12
                     currentLocation.speed,
                     distance,
