@@ -42,7 +42,7 @@ class LocationService : Service() {
     private lateinit var locProvider: FusedLocationProviderClient //10 (с помощью него сохраняются координаты для проложения маршрута за пользователем)
     private lateinit var locRequest: LocationRequest //10.4
     private lateinit var geoPointsList: ArrayList<GeoPoint>//12.1
-    private var isDebug = false //(!!если на реальном устройстве то false, если на эмуляторе, то true)
+    private var isDebug = true //(!!если на реальном устройстве то false, если на эмуляторе, то true)
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
