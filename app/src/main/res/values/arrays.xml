@@ -18,11 +18,17 @@
         <item>Green</item>
         <item>Blue</item>
         <item>Black</item>
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>Brown</item>
     </string-array>
     <string-array name="color_value">
         <item>#FF0000</item>
         <item>#14AD00</item>
         <item>#0040FF</item>
         <item>#FF000000</item>
+        <item>#FF9801</item>
+        <item>#FFE100</item>
+        <item>#983E02</item>
     </string-array>
 </resources>
